@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Javascript Semestrálna práca</title>
+
+    <style type="text/css">
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      button {
+        width: 100px;
+        height: 25px;
+        color: white;
+        background-color: red;
+      }
+
+      img {
+        padding-top: 10px;
+      }
+
+      #street-view {
+        height: 100%;
+      }
+
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 5%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: "sans-serif";
+        line-height: 30px;
+        padding-left: 10px;
+        width: 20%;
+        height: 30%;
+      }
+
+      #floating-panel {
+        margin-left: -100px;
+      }    
+    </style>
+    <script>
+      let score = 0
+      let mistakes=0
+      let panorama
+
+      var places = [
+          [{ lat: 60.171001,  lng: 24.939350 },  {country: 'Fínsko'}],
+          [{ lat: 48.858093,  lng: 2.294694 },   {country: 'Francúzsko'}], 
+          [{ lat: 51.510020,  lng: -0.134730 },  {country: 'Veľká Británia'}], 
+          [{ lat: 41.8902,    lng: 12.4922 },      {country: 'Taliansko'}],
+          [{ lat: 25.195302,  lng: 55.272879 },  {country: 'Spojené arabské emiráty'}], 
+          [{ lat: 1.283404,   lng: 103.863134 },  {country: 'Singapur'}],
+          [{ lat: 29.976768,  lng: 31.135538 },  {country: 'Egypt'}],
+          [{ lat: 40.757876,  lng: -73.985592 }, {country: 'Spojené štáty americké'}], 
+          [{ lat: 50.084567,  lng: 14.441166 }, {country: 'Česká republika'}],
+      ]
+        
+      let currentPlace = places[Math.floor(Math.random() * (places.length))]  
+      let coordinates = currentPlace[0] 
+      let country = currentPlace[1].country 
+
+      let reconfigure = () => { 
+        document.getElementById("score").innerHTML = "Momentálne skóre: " + score + " Počet chýb: "+ mistakes
+        currentPlace = places[Math.floor(Math.random() * (places.length))]
+        coordinates = currentPlace[0]
+        country = currentPlace[1].country
+
+        initialize()
+      }
+
+
+      const guess= () => {
+        var guess = window.prompt("Nachádzáme sa v ? (Zadajte názov štátu)")
+        if(guess === country) {
+          score++;
+          places = places.filter((place) => place !== currentPlace)
+			if(score==9){
+  			let win = 'Gratulujem! Vyhrali ste celú hru.' + '\n'+' Po stlačení "OK" sa vám hra načíta odznovu.'
+  			let playAgain = confirm(win);
+  			if (playAgain) {
+   		 		location.reload();
+ 	 			}
+			}
+			else{ 
+			alert("Správne! Momentálne skóre: " + score)
+          	reconfigure()
+          }
+
+        } else {
+          alert("Nesprávne! Mometálne skóre: " + score)
+          mistakes++
+          if(mistakes==3){
+          	let loose = 'Prehral si :('+ '\n'+'Hra sa sama obnoví.'
+          	  alert(loose);
+          	 setTimeout(function(){ location.reload(); }, 2000);
+          }else{reconfigure()}
+          
+        }
+      }
+
+
+      function initialize() {
+        panorama = new google.maps.StreetViewPanorama(
+          document.getElementById("street-view"),
+          {
+            position: coordinates,
+            pov: { heading: 165, pitch: 0 },
+            zoom: 1,
+          }
+        )
+      }    
+    </script>
+  </head>
+  <body>
+
+    <div id="floating-panel">
+      <h1> Pokiaľ si myslíš, že vieš kde si skús hádať! <br> Môžeš spraviť maximálne 3 chyby.</h1>
+      <h2 id="score"></h2>
+      <button onclick="guess()">Hádať</button>
+    </div>
+    <div id="street-view"></div>
+    <script
+      src=""
+      async
+    ></script>
+  </body>
+</html>
